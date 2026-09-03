@@ -13,23 +13,36 @@ useEffect(() => {
   }, []);
 
 
-
 return (
     <div>
       <h2>Calendar Events</h2>
-      <ul>
-        {records.map((record) => (
-          <li key={record.event_id}>
-            <strong>{record.title}</strong> 
-            - {record.organizer} 
-            - {record.start_time}
-            - {record.description}
-            - {record.location}
-          </li>
-        ))}
-      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Organizer</th>
+            <th>Start DateTime</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {records.map((record) => (
+            <tr key={record.event_id}>
+              <td>{record.event_id}</td>
+              <td>{record.title}</td>
+              <td>{record.organizer}</td>
+              <td>{record.start_time}</td>
+              <td>{record.location}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
+);
+
 }
 
 export default CalendarEvents;

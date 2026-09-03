@@ -13,24 +13,40 @@ useEffect(() => {
   }, []);
 
 
-
 return (
     <div>
       <h2>CRM Events</h2>
-      <ul>
-        {records.map((record) => (
-          <li key={record.crm_id}>
-            <strong>{record.subject}</strong> 
-            - {record.client_name} 
-            - {record.client_company}
-            - {record.relationship_owner}
-            - {record.meeting_date}
-            - {record.meeting_time}
-          </li>
-        ))}
-      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Client Name</th>
+            <th>Client Company</th>
+            <th>Relationship Owner</th>
+            <th>Meeting Date</th>
+            <th>Meeting Time</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {records.map((record) => (
+            <tr key={record.crm_id}>
+              <td>{record.crm_id}</td>
+              <td>{record.subject}</td>
+              <td>{record.client_name}</td>
+              <td>{record.client_company}</td>
+              <td>{record.relationship_owner}</td>
+              <td>{record.meeting_date}</td>
+              <td>{record.meeting_time}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
+);
+
 }
 
 export default CrmEvents;
