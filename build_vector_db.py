@@ -15,11 +15,13 @@ from utils import Utils
 
 # Configure logging settings
 logging.basicConfig(
-    filename='vector_app.log',
+    filename='logs/vector_app.log',
     filemode='a', # 'a' to append, 'w' to overwrite each run
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO # Capture INFO, WARNING, ERROR, and CRITICAL logs
 )
+
+logger = logging.getLogger(__name__)
 
 
 def load_data_to_vector(couch:CouchDBClient, event_type:str, vector_store: Chroma, parsing_callback_func):
@@ -45,7 +47,8 @@ def load_data_to_vector(couch:CouchDBClient, event_type:str, vector_store: Chrom
 			except Exception as exp:
 
 				logging.error(f"Error for record {record}")
-				logging.error(exp)
+				logger.exception(f"Error for record id : {record['crm_id']}")
+
 
 		text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=200)
 		all_splits = text_splitter.split_documents(documents)

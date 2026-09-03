@@ -84,12 +84,21 @@ class Utils():
 	@staticmethod
 	def parse_and_normalise_crm_event(record: dict)-> (str,dict):
 
-		attendees = ",".join([record['client_name'], record['relationship_owner']])
+		attendees = []
+
+		if record['client_name']:
+			attendees.append(record['client_name'])
+
+		if record['relationship_owner']:
+			attendees.append(record['relationship_owner'])
+
+		record['meeting_date'] = record['meeting_date'] if record['meeting_date'] else ''
+		record['meeting_time'] = record['meeting_time'] if record['meeting_time'] else ''
 
 		crm_text = f"""
 		Title: {record['subject']}
 		Client: {record['client_company']}
-		Attendees: {attendees}
+		Attendees: {", ".join(attendees)}
 		Date: {record['meeting_date']}
 		Time: {record['meeting_time']}
 		Location: {record['location']}
@@ -99,9 +108,7 @@ class Utils():
 		metadata = record
 		metadata['source'] = "crm"
 		metadata['record_type'] = "crm_meeting"
-		metadata['attendees'] = attendees
-		metadata['date'] = record['meeting_date']
-		metadata['time'] = record['meeting_time']
+		metadata['attendees'] = ",".join(attendees)
 
 		del metadata['reconciled_event']
 

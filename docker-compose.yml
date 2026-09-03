@@ -2,6 +2,42 @@ version: '3.8'
 
 services:
 
+  react-app:
+    container_name: reactapp
+    build:
+      context: ./web_interface
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    networks:
+      - dev_env
+    restart: always
+
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+    networks:
+      - dev_env
+    environment:
+      - COUCHDB_URL=http://admin:password@couchdb:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    depends_on:
+      couchdb:
+        condition: service_healthy
+    command: >
+      uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
 
   couchdb:
     image: couchdb:3.4.2
@@ -14,7 +50,19 @@ services:
     volumes:
       - couchdb_data:/opt/couchdb/data
     restart: always
+    networks:
+      - dev_env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984/_up"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
 
 volumes:
-  rabbitmq_data:
   couchdb_data:
+
+networks:
+  dev_env:
+    driver: bridge

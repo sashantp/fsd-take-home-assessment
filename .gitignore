@@ -1,0 +1,83 @@
+# Logs and databases
+*.log
+*.sqlite
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build outputs
+/dist
+/build
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# IPython
+Target dir for pb_data
+.ipynb_checkpoints/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+target/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environments and Secrets
+.env
+.secrets
+*.env.local
+
+# Testing / Coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
+.cache
+
+
+# Local environment secret variables
+.env
+.env.local
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+.zip

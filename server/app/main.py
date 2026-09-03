@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://172.19.0.3:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,22 +28,32 @@ def read_root():
 @app.get("/events/crm")
 def crm_events(db: CouchDBClient = Depends(get_couchdb)):
 
-  record = db.get('crm_events')
+  events = db.find_by_attribute(attribute='type', value='crm_event')
 
-  if record is None:
+  if events is None:
     raise HTTPException(status_code=404, detail="Record not found")
 
-  return record.get("events", {})
+  return events
 
 
 @app.get("/events/calendar")
 def calendar_events(db: CouchDBClient = Depends(get_couchdb)):
 
-  record = db.get('calendar_events')
+  events = db.find_by_attribute(attribute='type', value='calendar_event')
 
-  if record is None:
+  if events is None:
     raise HTTPException(status_code=404, detail="Record not found")
 
-  return record.get("events", {})
+  return events
 
+
+@app.get("/events/crm/reconciled")
+def calendar_events(db: CouchDBClient = Depends(get_couchdb)):
+
+  events = db.find_by_attribute(attribute='type', value='reconciled_crm_event')
+
+  if events is None:
+    raise HTTPException(status_code=404, detail="Record not found")
+
+  return events
 
