@@ -54,10 +54,8 @@ def load_data_to_vector(couch:CouchDBClient, event_type:str, vector_store: Chrom
 		vector_store.add_documents(documents=all_splits)
 		logging.info(f"Indexed {len(all_splits)} chunks.")
 
-	except FileNotFoundError:
-		logging.error("Error: The file was not found.")
-	except JSONDecodeError as e:
-		logging.error(f"Error: Invalid JSON formatting (Line {e.lineno}, Column {e.colno}).")
+	except Exception as exp:
+		logger.exception("Exception running reconcile events")
 
 
 if __name__ == "__main__":
