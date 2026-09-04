@@ -14,6 +14,7 @@ Before you begin, ensure you have met the following requirements:
 - Install [Ollama](https://docs.ollama.com/linux)
 - Install [pyenv](https://github.com/pyenv/pyenv) 
 
+
 ## ⚙️ Installation & Setup
 Follow these steps to get your development environment running:
 
@@ -32,51 +33,37 @@ Follow these steps to get your development environment running:
 	pip install -r requirements.txt
    ```
 
-4. Clone the repository:
-   ```bash
-   git clone https://github.com
-   ```
-
-5. Pull Ollama model:
-   ```bash
-   ollama pull nomic-embed-text:latest
-   ollama pull qwen2.5:1.5b
-   ```
-
-6. Run docker compose build (for first time): 
+4. Run docker compose build (for first time): 
    ```bash
 	docker compose -f docker-compose.yml build
    ```
 
-7. Run docker compose up: 
+5. Run docker compose up: 
    ```bash
 	docker compose -f docker-compose.yml up -d
    ```
 
-8. Run Data ingestion service:
+6. View Front-End Pages.
+
+- [Calender Events](http://127.0.0.1:5173/calender)
+- [CRM Events](http://127.0.0.1:5173/crm/)
+- [CRM Events Reconciled](http://127.0.0.1:5173/crm/reconciled)
+
+7. Stop and remove all the containers once done:
    ```bash
-	python data_ingestion_service.py
+   docker compose -f docker-compose.yml down
    ```
 
-9. Run to create vector database:
+8. Delete couchdb once everything is verified (Important Step):
    ```bash
-	python build_vector_db.py
+   python destroy.py
    ```
 
-10. Run reconciliation service:
+9. Stop and remove all the containers once done:
    ```bash
-	python reconciliation_service.py
+   docker compose -f docker-compose.yml down
    ```
 
-11. To delete setup once everything is complete:
-   ```bash
-	python destroy.py
-   ```
-
-12. Stop docker compose up: 
-   ```bash
-	docker compose -f docker-compose.yml down
-   ```
 
 
 ## Front-End Pages.
@@ -90,3 +77,7 @@ Follow these steps to get your development environment running:
 - http://127.0.0.1:8000/events/crm
 - http://127.0.0.1:8000/events/calendar
 - http://127.0.0.1:8000/events/crm/reconciled
+
+## CouchDB
+
+- http://localhost:5984/_utils/#login
