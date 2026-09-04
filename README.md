@@ -41,7 +41,7 @@ Follow these steps to get your development environment running:
    docker compose -f docker-compose.yml down
    ```
 
-5. Delete couchdb volume once done:
+5. Delete couchdb volume once done (Please run this step):
    ```bash
    docker volume rm fsd-take-home-assessment_couchdb_data
    ```
