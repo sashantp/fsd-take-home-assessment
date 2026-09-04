@@ -83,7 +83,6 @@ services:
       - dev_env
     volumes:
       - ./chroma_langchain_db:/app/chroma_langchain_db
-      - ./logs:/app/logs
     depends_on:
       couchdb:
         condition: service_healthy
