@@ -153,16 +153,20 @@ def reconcile_events(couch:CouchDBClient, event_type:str, embeddings:OllamaEmbed
 
 							recon_log.append(result_data)
 
+							reconciled_record_id = f"REC-{res[0].metadata['crm_id']}"
+
 							reconciled_record = res[0].metadata
 							reconciled_record['type'] = 'reconciled_crm_event'
-							reconciled_record['_id'] = f"REC-{res[0].metadata['crm_id']}" 
 							reconciled_record['event_id'] = record['event_id']
 							reconciled_record['difference'] = model_response['reason']
 							
-							logging.info("Creating reconciled_record")
-							logging.info(f"Reconciled record {reconciled_record}")
-							couch.create(reconciled_record)
-							logging.info("Created reconciled_record")
+							if not couch.exists(reconciled_record_id):
+								reconciled_record['_id'] = reconciled_record_id
+								couch.create(reconciled_record)
+								logging.info(f"Reconciled record created {reconciled_record_id}")
+							else:
+								couch.update(reconciled_record_id, reconciled_record)
+								logging.info(f"Reconciled record updated {reconciled_record_id} ")
 
 						break
 

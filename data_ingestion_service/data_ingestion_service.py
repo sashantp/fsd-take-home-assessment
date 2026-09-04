@@ -28,13 +28,18 @@ def write_to_database(filepath:str, couch_db_client, details):
 
 			for event in events:
 
-				event['_id'] = event[details['row_id']]
-				event['type'] = details['type']
-				event['reconciled_event'] = False
-
-				couch_db_client.create(event)
-
-				logging.info(f"Events {event['_id']} of type {event['type']} written to database")
+				_id = event[details['row_id']]
+				if not couch_db_client.exists(_id):
+					event['_id'] = _id
+					event['type'] = details['type']
+					event['reconciled_event'] = False
+					couch_db_client.create(event)
+					logging.info(f"Events {_id} of type {event['type']} written to database.")
+				else:
+					event['type'] = details['type']
+					event['reconciled_event'] = False
+					couch_db_client.update(_id, event)
+					logging.info(f"Events {_id} of type {event['type']} exists already.")
 
 	except FileNotFoundError:
 		logging.error("Error: The file was not found.")
