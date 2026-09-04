@@ -30,8 +30,6 @@ def load_data_to_vector(couch:CouchDBClient, event_type:str, vector_store: Chrom
 
 		events = couch.find_by_attribute(attribute='type', value=event_type)
 
-		logging.info(events)
-
 		for record in events:
 
 			try:

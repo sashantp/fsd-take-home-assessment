@@ -161,8 +161,12 @@ def reconcile_events(couch:CouchDBClient, event_type:str, embeddings:OllamaEmbed
 							
 							logging.info("Creating reconciled_record")
 							logging.info(f"Reconciled record {reconciled_record}")
-							couch.create(reconciled_record)
-							logging.info("Created reconciled_record")
+
+							if not couch.exists(reconciled_record['_id'])
+								couch.create(reconciled_record)
+								logging.info("Created reconciled_record")
+							else:
+								logging.info(f"Reconciled record {reconciled_record['_id']} already exists")
 
 						break
 

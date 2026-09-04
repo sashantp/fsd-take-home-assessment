@@ -5,11 +5,12 @@ WORKDIR /app
 RUN mkdir -p /app/logs
 
 # Install deps first for better layer caching
-COPY requirements.txt .
+COPY reconciliation_service/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY reconciliation_service.py .
-COPY ../couch_db_client.py .
-COPY utils.py .
+COPY reconciliation_service/reconciliation_service.py .
+COPY couch_db_client.py .
+COPY reconciliation_service/utils.py .
 
 CMD ["python", "reconciliation_service.py"]
