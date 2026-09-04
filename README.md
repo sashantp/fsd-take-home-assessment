@@ -11,7 +11,6 @@
 Before you begin, ensure you have met the following requirements:
 - Python 3.12.0+
 - Docker
-- Install [Ollama](https://docs.ollama.com/linux)
 - Install [pyenv](https://github.com/pyenv/pyenv) 
 
 
