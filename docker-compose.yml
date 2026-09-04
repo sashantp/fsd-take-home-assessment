@@ -2,6 +2,98 @@ version: '3.8'
 
 services:
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - dev_env
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        ollama serve &
+        while ! ollama list >/dev/null 2>&1; do sleep 1; done
+        echo "=== Pulling models ==="
+        ollama pull nomic-embed-text
+        ollama pull qwen2.5:1.5b
+        echo "=== Models pulled successfully ==="
+        wait
+    restart: unless-stopped
+
+
+  data_ingestion_service:
+    container_name: data_ingestion_service
+    build:
+      context: ./data_ingestion_service
+      dockerfile: Dockerfile
+    environment:
+      - COUCHDB_URL=http://admin:password@couchdb:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    networks:
+      - dev_env
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      couchdb:
+        condition: service_healthy
+
+  build_vector_store_service:
+    container_name: build_vector_store_service
+    build:
+      context: ./build_vector_store_service
+      dockerfile: Dockerfile
+    environment:
+      - COUCHDB_URL=http://admin:password@couchdb:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+      - OLLAMA_BASE_URL=http://ollama:11434
+    networks:
+      - dev_env
+    volumes:
+      - ./chroma_langchain_db:/app/chroma_langchain_db
+    depends_on:
+      couchdb:
+        condition: service_healthy
+      data_ingestion_service:
+        condition: service_completed_successfully
+      ollama:
+        condition: service_healthy
+
+  reconciliation_service:
+    container_name: reconciliation_service
+    build:
+      context: ./reconciliation_service
+      dockerfile: Dockerfile
+    environment:
+      - COUCHDB_URL=http://admin:password@couchdb:5984
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+      - OLLAMA_BASE_URL=http://ollama:11434
+    networks:
+      - dev_env
+    volumes:
+      - ./chroma_langchain_db:/app/chroma_langchain_db
+      - ./logs:/app/logs
+    depends_on:
+      couchdb:
+        condition: service_healthy
+      data_ingestion_service:
+        condition: service_completed_successfully
+      build_vector_store_service:
+        condition: service_completed_successfully
+      ollama:
+        condition: service_healthy
+
   react-app:
     container_name: reactapp
     build:
@@ -31,6 +123,12 @@ services:
       - COUCHDB_PASSWORD=password
     depends_on:
       couchdb:
+        condition: service_healthy
+      data_ingestion_service:
+        condition: service_completed_successfully
+      build_vector_store_service:
+        condition: service_completed_successfully
+      ollama:
         condition: service_healthy
     command: >
       uvicorn main:app
@@ -62,6 +160,7 @@ services:
 
 volumes:
   couchdb_data:
+  ollama_data:
 
 networks:
   dev_env:

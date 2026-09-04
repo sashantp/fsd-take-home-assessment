@@ -38,14 +38,16 @@ def destroy_vector_database():
 
 	cwd = os.getcwd()
 
-	embeddings = OllamaEmbeddings(model="nomic-embed-text")
+	ollama_url = os.getenv("OLLAMA_BASE_URL","http://localhost:11434")
+
+	embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
 
 	collection_name = 'meetings'
 
 	persist_directory=f"{cwd}/chroma_langchain_db"
 
 	vector_store = Chroma(
-			collection_name=collection_name,
+			collection_name="meetings",
 			embedding_function=embeddings,
 		    persist_directory=f"{cwd}/chroma_langchain_db"
 		)
@@ -64,4 +66,4 @@ def destroy_vector_database():
 if __name__ == "__main__":
 
 	delete_couch_database()
-	destroy_vector_database()
+	# destroy_vector_database()
