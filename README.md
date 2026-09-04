@@ -18,52 +18,33 @@ Before you begin, ensure you have met the following requirements:
 ## ⚙️ Installation & Setup
 Follow these steps to get your development environment running:
 
-1. Create virtual environment: 
-   ```bash
-	pyenv virtualenv 3.12.10 assessment
-   ```
 
-2. Activate virtual environment: 
-   ```bash
-	pyenv activate assessment
-   ```
-
-3. Install all the python packages from requirements.txt: 
-   ```bash
-	pip install -r requirements.txt
-   ```
-
-4. Run docker compose build (for first time): 
+1. Run docker compose build (for first time): 
    ```bash
 	docker compose -f docker-compose.yml build
    ```
 
-5. Run docker compose up: 
+2. Run docker compose up: 
    ```bash
 	docker compose -f docker-compose.yml up -d
    ```
 
-6. View Front-End Pages.
+3. View Front-End Pages.
 
 - [Calender Events](http://127.0.0.1:5173/calender)
 - [CRM Events](http://127.0.0.1:5173/crm/)
 - [CRM Events Reconciled](http://127.0.0.1:5173/crm/reconciled)
 
-7. Stop and remove all the containers once done:
+
+4. Stop and remove all the containers once done:
    ```bash
    docker compose -f docker-compose.yml down
    ```
 
-8. Delete couchdb once everything is verified (Important Step):
+5. Delete couchdb volume once done:
    ```bash
-   python destroy.py
+   docker volume rm fsd-take-home-assessment_couchdb_data
    ```
-
-9. Stop and remove all the containers once done:
-   ```bash
-   docker compose -f docker-compose.yml down
-   ```
-
 
 
 ## Front-End Pages.
