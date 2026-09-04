@@ -1,5 +1,5 @@
 # Logs and databases
-*.log
+# *.log
 *.sqlite
 
 # Dependency directories
