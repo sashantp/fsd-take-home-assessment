@@ -8,6 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY build_vector_store_service/build_vector_db.py .
 COPY couch_db_client.py .
-COPY build_vector_store_service/utils.py .
+COPY utils.py .
 
 CMD ["python", "build_vector_db.py"]

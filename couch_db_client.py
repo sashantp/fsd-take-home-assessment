@@ -108,3 +108,9 @@ class CouchDBClient:
         result = self.db.find({'selector': {attribute:value}})
 
         return list(result)
+
+    def find_by_attributes(self, attributes:list):
+
+        result = self.db.find({'selector': {"$and": attributes }})
+
+        return list(result)

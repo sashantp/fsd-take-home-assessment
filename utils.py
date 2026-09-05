@@ -4,12 +4,6 @@ import logging
 import re
 
 from datetime import datetime
-from json import JSONDecodeError
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
 
 
 class Utils():
@@ -66,14 +60,13 @@ class Utils():
 				Description: {record['description']}
 		"""
 
-		metadata = record
+		metadata = {}
+		metadata['event_id'] = record['event_id']
 		metadata['source'] = "calendar"
 		metadata['record_type'] = "calendar_event"
 		metadata['attendees'] = ",".join(attendees)
 		metadata['date'] = date
 		metadata['time'] = time
-
-		del metadata['reconciled_event']
 
 		logging.info(f"Parsed and normalised calendar event")
 		logging.info(f"Parsed calendar event text {calendar_text}")
@@ -105,12 +98,11 @@ class Utils():
 		Description: {record['notes']}
 		"""
 
-		metadata = record
+		metadata = {}
+		metadata['crm_id'] = record['crm_id']
 		metadata['source'] = "crm"
 		metadata['record_type'] = "crm_meeting"
 		metadata['attendees'] = ",".join(attendees)
-
-		del metadata['reconciled_event']
 
 		logging.info(f"Parsed and normalised crm event")
 		logging.info(f"Parsed crm event text {crm_text}")
