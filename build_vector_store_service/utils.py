@@ -4,12 +4,6 @@ import logging
 import re
 
 from datetime import datetime
-from json import JSONDecodeError
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
 
 
 class Utils():
@@ -66,7 +60,8 @@ class Utils():
 				Description: {record['description']}
 		"""
 
-		metadata = record
+		metadata = {}
+		metadata['event_id'] = record['event_id']
 		metadata['source'] = "calendar"
 		metadata['record_type'] = "calendar_event"
 		metadata['attendees'] = ",".join(attendees)
@@ -105,7 +100,8 @@ class Utils():
 		Description: {record['notes']}
 		"""
 
-		metadata = record
+		metadata = {}
+		metadata['crm_id'] = record['crm_id']
 		metadata['source'] = "crm"
 		metadata['record_type'] = "crm_meeting"
 		metadata['attendees'] = ",".join(attendees)
