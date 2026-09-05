@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY reconciliation_service/reconciliation_service.py .
 COPY couch_db_client.py .
-COPY reconciliation_service/utils.py .
+COPY utils.py .
 
 CMD ["python", "reconciliation_service.py"]

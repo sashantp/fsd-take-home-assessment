@@ -68,8 +68,6 @@ class Utils():
 		metadata['date'] = date
 		metadata['time'] = time
 
-		del metadata['reconciled_event']
-
 		logging.info(f"Parsed and normalised calendar event")
 		logging.info(f"Parsed calendar event text {calendar_text}")
 		logging.info(f"Parsed calendar event metadata {metadata}")
@@ -105,8 +103,6 @@ class Utils():
 		metadata['source'] = "crm"
 		metadata['record_type'] = "crm_meeting"
 		metadata['attendees'] = ",".join(attendees)
-
-		del metadata['reconciled_event']
 
 		logging.info(f"Parsed and normalised crm event")
 		logging.info(f"Parsed crm event text {crm_text}")

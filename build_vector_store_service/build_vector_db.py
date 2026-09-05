@@ -87,10 +87,12 @@ if __name__ == "__main__":
 
 	embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
 
+	chroma_persist_directory = os.getenv("CHROMA_PERSIST_DIR", f"{cwd}/chroma_langchain_db")
+
 	vector_store = Chroma(
 			collection_name="meetings",
 			embedding_function=embeddings,
-		    persist_directory=f"{cwd}/chroma_langchain_db"
+		    persist_directory=chroma_persist_directory
 		)
 
 	llm = ChatOllama(

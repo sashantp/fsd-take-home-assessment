@@ -97,7 +97,7 @@ def reconcile_events(couch:CouchDBClient, event_type:str, embeddings:OllamaEmbed
 
 		recon_log = []
 
-		events = couch.find_by_attribute(attribute='type', value=event_type)
+		events = couch.find_by_attributes(attributes=[{"type":{"$eq":event_type}},{"reconciled_event":{"$eq":False}}])
 
 		for record in events:
 			try:
@@ -108,18 +108,20 @@ def reconcile_events(couch:CouchDBClient, event_type:str, embeddings:OllamaEmbed
 				crm_text_list = []
 				vector_store_search_res_score = {res[0].metadata['crm_id']:res[1] for res in results}
 
-				calendar_text = f"""Title: {metadata['title']} \n Description: {metadata['description']}"""
+				calendar_text = f"""Title: {record['title']} \n Description: {record['description']}"""
 
 				for res in results:
+
+					crm_metadata = couch.get(res[0].metadata['crm_id'])
 
 					common_attendees = set(metadata['attendees'].split(",")).intersection(set(res[0].metadata['attendees'].split(",")))
 					logging.info(f"Common attendees {common_attendees}")
 					logging.info(f"Calendar Event attendees {metadata['attendees']}")					
 					logging.info(f"CRM Event attendees {res[0].metadata['attendees']}")
-					logging.info(f"CRM Event date and time {res[0].metadata['meeting_date']} and {res[0].metadata['meeting_time']}")
+					logging.info(f"CRM Event date and time {crm_metadata['meeting_date']} and {crm_metadata['meeting_time']}")
 
-					if metadata['date'] == res[0].metadata['meeting_date'] and metadata['time'] == res[0].metadata['meeting_time'] and len(common_attendees) >= 1:
-						logging.info("Date and Time are exactly matching with one common attendees, no need to verify with llm.")
+					if not crm_metadata['reconciled_event'] and metadata['date'] == crm_metadata['meeting_date'] and metadata['time'] == crm_metadata['meeting_time'] and len(common_attendees) >= 1:
+						logging.info("Date and Time are exactly matching with one common attendees, verify reason with llm.")
 						print(res[0].metadata['crm_id'], res[1])
 						print()
 
@@ -209,10 +211,12 @@ if __name__ == "__main__":
 
 	embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=ollama_url)
 
+	chroma_persist_directory = os.getenv("CHROMA_PERSIST_DIR", f"{cwd}/chroma_langchain_db")
+
 	vector_store = Chroma(
 			collection_name="meetings",
 			embedding_function=embeddings,
-		    persist_directory=f"{cwd}/chroma_langchain_db"
+		    persist_directory=chroma_persist_directory
 		)
 
 	llm = ChatOllama(
